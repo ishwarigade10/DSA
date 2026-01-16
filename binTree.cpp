@@ -3,21 +3,31 @@
 using namespace std;
 
 struct Btree {
-    int data;
+    int age;
+    string name;
+    long aadhaar;
     Btree* lchild;
     Btree* rchild;
     int flag;   // used for postorder
 };
 
 Btree* root = NULL;
-
 void insertNode() {
-    int val;
-    cout << "Enter data: ";
-    cin >> val;
-
+    int vage;
+    string vname;
+    long vaadhar;
+    
+    cout<<"Enter age";
+    cin>>vage;
+    cout<<"Enter Name";
+    cin>>vname;
+    cout<<"Enter aadhar";
+    cin>>vaadhar;
     Btree* temp = new Btree;
-    temp->data = val;
+   
+    temp->age=vage;
+    temp->name=vname;
+    temp->aadhaar=vaadhar;
     temp->lchild = NULL;
     temp->rchild = NULL;
     temp->flag = 0;
@@ -68,7 +78,7 @@ void inorderTraversal() {
         temp = s.top();
         s.pop();
 
-        cout << temp->data << " ";
+        cout<< "[ "<<temp->age<<" "<<temp->name<<" "<<temp->aadhaar<<"]";
         temp = temp->rchild;
     }
 }
@@ -82,7 +92,7 @@ void preorderTraversal() {
     while (temp != NULL || !s.empty()) {
 
         while (temp != NULL) {
-            cout << temp->data << " ";   // print first
+            cout<< "[ "<<temp->age<<" "<<temp->name<<" "<<temp->aadhaar<<"]";   // print first
 
             if (temp->rchild != NULL)
                 s.push(temp->rchild);   // push right
@@ -123,29 +133,104 @@ void postorderTraversal() {
             temp = temp->rchild;
         }
         else {
-            cout << temp->data << " ";
+            cout<< "["<<temp->age<<" "<<temp->name<<" "<<temp->aadhaar<<"]";
             temp = NULL;
         }
-    }
+    } 
 }
+void Sibling(Btree* root)
+{
+    if(root==NULL)
+    return;
+    if(root->lchild!=NULL&&root->rchild!=NULL)
+    cout<<"["<<root->lchild->age<<root->lchild->name<<root->lchild->aadhaar<<"] ""["<<root->rchild->age<<root->rchild->name<<root->rchild->aadhaar<<"]";
+    Sibling(root->lchild);
+    Sibling(root->rchild);
+}
+void leafNode(Btree* root)
+{ 
+    if(root==NULL)
+    return;
+    if(root->lchild==NULL&& root->rchild==NULL)
+     {
+        cout<<"["<<root->age<<" "<<root->name<<" "<<root->aadhaar<<"]\n";
+        
+        return;
+    }
+    leafNode(root->lchild);
+    leafNode(root->rchild);   
+}
+int  HeightOfTree(Btree* root)
+{   
 
+    if(root==NULL)
+    return -1;
+    int hl=HeightOfTree(root->lchild);
+    int hr=HeightOfTree(root->rchild);
+    return 1+(max(hl,hr));
+}
+bool SearchNode(Btree* root,long key)
+{
+    if(root==NULL)
+    {
+        return false ;
+    }
+    if(root->aadhaar==key)
+    {
+        return true;
+    }
+    return SearchNode(root->lchild,key)|| SearchNode(root->rchild,key);
+}
 int main() {
-    char choice;
-
-    do {
-        insertNode();
-        cout << "Do you want to insert more nodes? (y/n): ";
-        cin >> choice;
-    } while (choice == 'y' || choice == 'Y');
-
+    int choice;
+    while(1)
+ {
+    cout<<"\n1.Insert  Node\n2.Inorder Traversal\n3.Preorder Traversal\n4.Postorder Traversal\n5.Find LeafNode\n6.Height of Tree\n7.Search Aadhar\n8.Sibling\n9.Exit";
+cout<<"\nEnter choice";
+ cin>>choice;   
+ switch(choice)
+ 
+{ 
+    case 1:
+    insertNode();
+    break;
+    case 2:
     cout << "\nInorder Traversal: ";
-    inorderTraversal();
-
-    cout << "\nPreorder Traversal: ";
-    preorderTraversal();
-
-    cout << "\nPostorder Traversal: ";
-    postorderTraversal();
-
+inorderTraversal();
+break;
+case 3:
+cout << "\nPreorder Traversal: ";
+preorderTraversal();
+break;
+case 4:
+cout << "\nPostorder Traversal: ";
+postorderTraversal();
+break;
+case 5:
+cout<<"The Leaf Nodes are:\n";
+leafNode(root);
+break;
+case 6:
+cout<<"The height is:"<<HeightOfTree(root);
+break;
+case 7:
+int key;
+cout<<"ENter the Aadhar no to search";
+cin>>key;
+if(SearchNode(root,key))
+cout<<"Aadhar found\nAadhaar details\n"<<"NAME:"<<root->name<<"\nAGE:"<<root->age;
+else
+cout<<"Not found\n";
+break;
+case 8:
+Sibling(root);
+break;
+case 9:
+cout<<"Exiting....";
+return 0;
+ default:
+ printf("invalid choice");
+}
+}
     return 0;
 }
