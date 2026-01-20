@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stack>
 using namespace std;
-
+int found=0;
 struct Btree {
     int age;
     string name;
@@ -169,23 +169,32 @@ int  HeightOfTree(Btree* root)
     int hr=HeightOfTree(root->rchild);
     return 1+(max(hl,hr));
 }
-bool SearchNode(Btree* root,long key)
+void SearchNode(Btree* root,long key)
 {
     if(root==NULL)
     {
-        return false ;
+        return ;
     }
-    if(root->aadhaar==key)
+    SearchNode(root->lchild,key);
+    if(root->aadhaar==key &&found==0)
     {
-        return true;
+       cout<<"Aadhar found\nAadhaar details\n"<<"NAME:"<<root->name<<"\nAGE:"<<root->age;
+       found=1;
+       return ;
     }
-    return SearchNode(root->lchild,key)|| SearchNode(root->rchild,key);
+     SearchNode(root->rchild,key);
+}
+void Ancestor(Btree* root)
+{
+if(root==NULL)    
+return;
+cout<<"["<<root->age<<" "<<root->name<<" "<<root->aadhaar<<"]";
 }
 int main() {
     int choice;
     while(1)
  {
-    cout<<"\n1.Insert  Node\n2.Inorder Traversal\n3.Preorder Traversal\n4.Postorder Traversal\n5.Find LeafNode\n6.Height of Tree\n7.Search Aadhar\n8.Sibling\n9.Exit";
+    cout<<"\n1.Insert  Node\n2.Inorder Traversal\n3.Preorder Traversal\n4.Postorder Traversal\n5.Find LeafNode\n6.Height of Tree\n7.Search Aadhar\n8.Sibling\n9.Ancestor\n10.Exit";
 cout<<"\nEnter choice";
  cin>>choice;   
  switch(choice)
@@ -217,15 +226,19 @@ case 7:
 int key;
 cout<<"ENter the Aadhar no to search";
 cin>>key;
-if(SearchNode(root,key))
-cout<<"Aadhar found\nAadhaar details\n"<<"NAME:"<<root->name<<"\nAGE:"<<root->age;
-else
-cout<<"Not found\n";
+found=0;
+SearchNode(root,key);
+if(found==0)
+    cout<<"Not found\n";
 break;
 case 8:
 Sibling(root);
 break;
 case 9:
+cout<<"Ancestor of tree is:\n";
+Ancestor(root);
+break;
+case 10:
 cout<<"Exiting....";
 return 0;
  default:
